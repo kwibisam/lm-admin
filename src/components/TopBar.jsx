@@ -5,7 +5,6 @@ import React, { useContext } from "react";
 import { ColorModeContext, tokens } from "../theme";
 
 import SearchIcon from "@mui/icons-material/Search";
-import { Search } from "@mui/icons-material";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
