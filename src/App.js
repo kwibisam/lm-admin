@@ -1,3 +1,4 @@
+import TopBar from "./components/TopBar";
 import { ColorModeContext,useMode } from "./theme";
 import {ThemeProvider,CssBaseline} from '@mui/material'
 
@@ -9,7 +10,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline/>
         <div className="app">
-          <main className="content"></main>
+          <main className="content">
+            <TopBar/>
+          </main>
         </div>
       </ThemeProvider>
       
