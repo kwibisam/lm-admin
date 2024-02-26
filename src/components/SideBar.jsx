@@ -13,7 +13,6 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 
-
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -25,9 +24,9 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
         }}
         onClick={() => setSelected(title)}
         icon={icon}
+        component={<Link to={to}/>}
       >
         <Typography>{title}</Typography>
-        <Link to={to} />
       </MenuItem>
     );
   };
@@ -37,27 +36,41 @@ const SideBar = () => {
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
+    console.log("selected:", selected)
     return (
         <Box
         sx={{
-          "&.pro-sidebar-inner": {
-            backgroundColor: `${colors.primary[400]} !important`,
-          },
-          "&.pro-icon-wrapper": {
-            backgroundColor: "transparent !important",
-          },
-          "&.pro-inner-item": {
-            padding: "5px 35px 5px 20px !important",
-          },
-          "&.pro-inner-item:hover": {
-            color: "#868dfb !important",
-          },
-          "&.pro-menu-item.active": {
-            color: "#6870fa !important",
-          },
-        }}
+            position: "sticky",
+            display: "flex",
+            height: "100vh",
+            top: 0,
+            bottom: 0,
+            zIndex: 10000,
+            "& .sidebar": {
+              border: "none",
+            },
+            "& .menu-icon": {
+              backgroundColor: "transparent !important",
+            },
+            "& .menu-item": {
+              // padding: "5px 35px 5px 20px !important",
+              backgroundColor: "transparent !important",
+            },
+            "& .menu-anchor": {
+              color: "inherit !important",
+              backgroundColor: "transparent !important",
+            },
+            "& .menu-item:hover": {
+              color: `${colors.blueAccent[500]} !important`,
+              backgroundColor: "transparent !important",
+            },
+            "& .menu-item.active": {
+              color: `${colors.greenAccent[500]} !important`,
+              backgroundColor: "transparent !important",
+            },
+          }}
       >
-        <Sidebar collapsed={isCollapsed}>
+        <Sidebar collapsed={isCollapsed} style={{ height: "100%" }} backgroundColor={colors.primary[400]}>
           <Menu iconShape="square">
             {/* LOGO AND MENU ICON */}
             <MenuItem

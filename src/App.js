@@ -9,6 +9,7 @@ import {ThemeProvider,CssBaseline} from '@mui/material'
 
 import { Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
+import AddBorrower from "./screens/AddBorrower";
 
 function App() {
 
@@ -23,9 +24,10 @@ function App() {
             <TopBar/>
             <Routes>
               <Route path="/" element = {<Dashboard/>} />
-              <Route path="/" element = {<Analytics/>}/>
-              <Route path="" element = {<Borrower/>} />
-              <Route path="" element = {<Loan/>} />
+              <Route path="/analytics" element = {<Analytics/>}/>
+              <Route path="/borrowers" element = {<Borrower/>} />
+              <Route path="/loans" element = {<Loan/>} />
+              <Route path="/addBorrower" element = {<AddBorrower/>}/>
             </Routes>
           </main>
         </div>
