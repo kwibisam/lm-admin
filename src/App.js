@@ -10,6 +10,7 @@ import {ThemeProvider,CssBaseline} from '@mui/material'
 import { Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import AddBorrower from "./screens/AddBorrower";
+import AddLoan from "./screens/AddLoan";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
               <Route path="/borrowers" element = {<Borrower/>} />
               <Route path="/loans" element = {<Loan/>} />
               <Route path="/addBorrower" element = {<AddBorrower/>}/>
+              <Route path="/add-loan" element = {<AddLoan/>}/>
             </Routes>
           </main>
         </div>

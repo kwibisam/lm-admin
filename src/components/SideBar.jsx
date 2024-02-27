@@ -88,8 +88,8 @@ const SideBar = () => {
                   alignItems="center"
                   ml="15px"
                 >
-                  <Typography variant="h3" color={colors.grey[100]}>
-                    ADMIN
+                  <Typography variant="h4" color={colors.grey[100]}>
+                    LoanPro
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -100,7 +100,7 @@ const SideBar = () => {
   
             {!isCollapsed && (
               <Box mb="25px">
-                <Box display="flex" justifyContent="center" alignItems="center">
+                {/* <Box display="flex" justifyContent="center" alignItems="center">
                   <img
                     alt="profile-user"
                     width="100px"
@@ -108,8 +108,8 @@ const SideBar = () => {
                     src={`../assets/img.jpg`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
-                </Box>
-                <Box textAlign="center">
+                </Box> */}
+                {/* <Box textAlign="center">
                   <Typography
                     variant="h2"
                     color={colors.grey[100]}
@@ -121,7 +121,7 @@ const SideBar = () => {
                   <Typography variant="h5" color={colors.greenAccent[500]}>
                     VP Fancy Admin
                   </Typography>
-                </Box>
+                </Box> */}
               </Box>
             )}
   
