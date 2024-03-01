@@ -11,6 +11,11 @@ import { Routes, Route } from "react-router-dom";
 import SideBar from "./components/SideBar";
 import AddBorrower from "./screens/AddBorrower";
 import AddLoan from "./screens/AddLoan";
+import BorrowerProfile from "./screens/BorrowerProfile";
+import CreateLoan from "./screens/CreateLoan";
+import LoanDetails from "./screens/LoanDetails";
+import DisburseLoan from "./screens/DisburseLoan";
+import PayLoan from "./screens/PayLoan";
 
 function App() {
 
@@ -30,6 +35,11 @@ function App() {
               <Route path="/loans" element = {<Loan/>} />
               <Route path="/addBorrower" element = {<AddBorrower/>}/>
               <Route path="/add-loan" element = {<AddLoan/>}/>
+              <Route path="/borrower-profile/:id" element = {<BorrowerProfile/>}/>
+              <Route path="/create-loan" element = {<CreateLoan/>}/>
+              <Route path="/loan-details/:id" element ={<LoanDetails/>}/>
+              <Route path="/disburse-loan/:id" element ={<DisburseLoan/>}/>
+              <Route path="/pay-loan/:id" element ={<PayLoan/>}/>
             </Routes>
           </main>
         </div>

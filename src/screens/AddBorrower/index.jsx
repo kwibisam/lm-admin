@@ -12,6 +12,8 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import BorrowerForm from './BorrowerForm';
 import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import BorrowerRegistration2 from './BorrowerRegistration2.JSX';
 
 const AddBorrower = () => {
     const theme = useTheme();
@@ -19,7 +21,7 @@ const AddBorrower = () => {
     const navigate = useNavigate();
 
     const handleBack = () => {
-      navigate(-1); // Go back one step in the history stack
+      navigate("/borrowers"); // Go back one step in the history stack
     };
   
     return (

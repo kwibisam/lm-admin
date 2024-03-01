@@ -12,6 +12,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 import { tokens } from '../../theme';
 import Avatar from '@mui/material/Avatar';
+import { Link, useNavigate } from 'react-router-dom';
 
 // const columns = [
 //   { field: 'id', headerName: 'ID', width: 70 },
@@ -28,7 +29,19 @@ import Avatar from '@mui/material/Avatar';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
+  { 
+    field: 'firstName', 
+    headerName: 'First name', 
+    width: 130 ,
+    renderCell: (params) => {
+      const onClick = (e) => {
+        return alert(JSON.stringify(params.row, null, 4));
+      };
+      const row = params.row
+      const profileLink = `/borrower-profile/${row.id}`;
+      return  <Link to={profileLink}>View Profile</Link>;
+    }
+  },
   { field: 'lastName', headerName: 'Last name', width: 130 },
   {
     field: 'age',
@@ -83,6 +96,8 @@ const Borrower = () => {
   const [rowSelectionModel,setRowSelectionModel] = useState([])
   const [showDeleteButton, setShowDeleteButton] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleOnClick =() =>{
   }
   const handleOnDelete = () => {
@@ -123,7 +138,7 @@ const Borrower = () => {
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center" p={1} bgcolor={colors.primary[600]}>
         <Typography variant='h1'>Borrower List</Typography>
-        <Fab variant="extended" color={colors.primary[400]} size='large'>
+        <Fab variant="extended" color={colors.primary[400]} size='medium' onClick={() =>{ navigate("/addBorrower");}}>
           <AddIcon sx={{ mr: 1 }} />
           {/* <Typography variant='caption'>NEW</Typography> */}
           ADD NEW
