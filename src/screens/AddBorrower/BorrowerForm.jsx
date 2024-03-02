@@ -51,74 +51,67 @@ const BorrowerForm = () => {
 
   const handleNrcFile =(event) =>{
     const file = event.target.files[0]
-    if(file.type !== 'image/jpeg' || file.type !==  'application/pdf') {
-      alert("please provide jpeg imae or pdf file")
-      return
-    }else if (file.size > 1024 * 1024) {
-      alert('File size should not exceed 1MB.');
-      return;
-    } else{
-      setFormData({
-        ...formData,['nrcFile']:file
-      })
-    }
+    console.log("the file",file)
+    setFormData({
+      ...formData,['nrcFile']:file
+    })
 
 
   }
 
   const handleAttachements = (event) => {
     const files = event.target.files
+    console.log(files)
     setFormData({
       ...formData,['attachments']:files
     })
   }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    
-    const formData = new FormData(); // Create a FormData object
+    event.preventDefault();    
+    const Data = new FormData(); // Create a FormData object
 
     // Append form data fields
-    formData.append('firstName', formData.firstName);
-    formData.append('lastName', formData.lastName);
-    formData.append('addressLine1', formData.addressLine1);
-    formData.append('phone', formData.phone);
-    formData.append('alternativePhone', formData.alternativePhone);
-    formData.append('nrc', formData.nrc);
-    formData.append('dob', formData.dob);
-    formData.append('income', formData.income);
-    formData.append('gender', formData.gender);
+    Data.append('firstName', formData.firstName);
+    Data.append('lastName', formData.lastName);
+    Data.append('addressLine1', formData.addressLine1);
+    Data.append('phone', formData.phone);
+    Data.append('alternativePhone', formData.alternativePhone);
+    Data.append('nrc', formData.nrc);
+    Data.append('dob', formData.dob);
+    Data.append('income', formData.income);
+    Data.append('gender', formData.gender);
 
      // Append NRC file
-    formData.append('nrcFile', formData.nrcFile);
+     Data.append('nrcFile', formData.nrcFile,formData.nrcFile.name);
 
     // Append other attachments
-    const otherAttachments = document.getElementById('attachments').files;
-    for (let i = 0; i < otherAttachments.length; i++) {
-      formData.append('attachments[]', otherAttachments[i]);
+    for (let att of formData.attachments) {
+      Data.append('attachments', att,att.name);
     }
 
-    // const response = await fetch('http://localhost:8080/api/v1/borrowers', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // });
-
-    const response = await fetch('http://localhost:8080/api/v1/borrowers', {
-      method: 'POST',
-      body: formData, // Pass formData directly as the body
-    });
-
-    if (response.ok) {
-      console.log('Borrower data submitted successfully!');
-      // Handle successful submission (e.g., clear form, display success message)
-    } else {
-      console.error('Error submitting data:', response.statusText);
-      // Handle submission error
+    try{
+      for(const key of Data.keys()){
+        // console.log(key)
+      }
+      const response = await fetch('http://localhost:8080/api/v1/borrowers', {
+        method: 'POST',
+        body: Data, // Pass formData directly as the body
+      });
+  
+      if (response.ok) {
+        console.log('Borrower data submitted successfully!');
+        // Handle successful submission (e.g., clear form, display success message)
+        alert("Registration Success!")
+      } else {
+        console.error('Error submitting data:', response.statusText);
+        // Handle submission error
+        alert(response.statusText)
+      }
+    }catch(err){
+      alert(err) 
     }
-    console.log('Submitted borrower data:', formData);
+   
   };
 
   return (

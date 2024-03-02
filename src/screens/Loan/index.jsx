@@ -26,8 +26,8 @@ import { Link, useNavigate } from "react-router-dom";
 const columns = [
   { field: "id", headerName: "ID", width: 70 },
   {
-    field: "principal",
-    headerName: "Principal",
+    field: "loanAmount",
+    headerName: "LoanAmount",
     width: 130,
     type:"number",
     renderCell: (params) => {
@@ -36,7 +36,7 @@ const columns = [
       };
       const row = params.row;
       const profileLink = `/loan-details/${row.id}`;
-      return <Link to={profileLink}>View Profile</Link>;
+      return <Link to={profileLink}>{row.loanAmount}</Link>;
     },
   },
   { field: "interestAmount", headerName: "Interest Amount", width: 130,type:"number" },
@@ -49,7 +49,46 @@ const columns = [
   {
     field: "duration",
     headerName: "Duration",
-    sortable: false,
+    width: 160,
+  },
+  {
+    field: "frequency",
+    headerName: "Frequency",
+    width: 160,
+  },
+
+  {
+    field: "repaymentAmount",
+    headerName: "RepaymentAmount",
+    width: 160,
+  },
+  {
+    field: "startDate",
+    headerName: "StartDate",
+    width: 160,
+  },
+
+  {
+    field: "status",
+    headerName: "Status",
+    width: 160,
+  },
+
+  {
+    field: "loanBalance",
+    headerName: "LoanBalance",
+    width: 160,
+  },
+
+  {
+    field: "totalPayOff",
+    headerName: "TotalPayOff",
+    width: 160,
+  },
+
+  {
+    field: "isDisbursed",
+    headerName: "IsDisbursed",
     width: 160,
   },
   {
@@ -138,8 +177,8 @@ const Loan = () => {
         console.error("Error fetching data:", error);
       }
     };
-    // fetchData();
-    setRows(rows2);
+    fetchData();
+    // setRows(rows2);
   }, []);
 
   return (
@@ -153,6 +192,7 @@ const Loan = () => {
         bgcolor={colors.primary[600]}
       >
         <Typography variant="h1">Loans</Typography>
+
         <Fab
           variant="extended"
           color={colors.primary[400]}
@@ -209,7 +249,7 @@ const Loan = () => {
               </Tooltip>
           </Stack>
 
-          <DataGrid
+          <DataGrid sx={{maxWidth: 1040}}
             rowSelectionModel={rowSelectionModel}
             onRowSelectionModelChange={handleSelectionChange}
             disableRowSelectionOnClick

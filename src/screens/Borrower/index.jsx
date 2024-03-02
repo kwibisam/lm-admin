@@ -14,50 +14,25 @@ import { tokens } from '../../theme';
 import Avatar from '@mui/material/Avatar';
 import { Link, useNavigate } from 'react-router-dom';
 
-// const columns = [
-//   { field: 'id', headerName: 'ID', width: 70 },
-//   { field: 'firstName', headerName: 'First Name', width: 130 },
-//   { field: 'lastName', headerName: 'Last Name', width: 130 },
-//   { field: 'dob', headerName: 'Date of Birth', width: 130 },
-//   { field: 'addressLine1', headerName: 'Address Line 1', width: 150 },
-//   { field: 'addressLine2', headerName: 'Address Line 2', width: 150 },
-//   { field: 'phone', headerName: 'Phone', width: 120 },
-//   { field: 'alternativePhone', headerName: 'Alternative Phone', width: 170 },
-//   { field: 'nrc', headerName: 'NRC', width: 120 },
-//   { field: 'income', headerName: 'Income', width: 120 }
-// ];
-
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { 
-    field: 'firstName', 
-    headerName: 'First name', 
-    width: 130 ,
-    renderCell: (params) => {
-      const onClick = (e) => {
-        return alert(JSON.stringify(params.row, null, 4));
-      };
-      const row = params.row
-      const profileLink = `/borrower-profile/${row.id}`;
-      return  <Link to={profileLink}>View Profile</Link>;
-    }
-  },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
+  { field: 'firstName', headerName: 'First Name', width: 130 ,
+  renderCell: (params) => {
+    const onClick = (e) => {
+      return alert(JSON.stringify(params.row, null, 4));
+    };
+    const row = params.row
+    const profileLink = `/borrower-profile/${row.id}`;
+    return  <Link to={profileLink}>{row.firstName}</Link>;
+  }},
+  { field: 'lastName', headerName: 'Last Name', width: 130 },
+  { field: 'dob', headerName: 'Date of Birth', width: 130 },
+  { field: 'addressLine1', headerName: 'Address Line 1', width: 150 },
+  { field: 'addressLine2', headerName: 'Address Line 2', width: 150 },
+  { field: 'phone', headerName: 'Phone', width: 120 },
+  { field: 'alternativePhone', headerName: 'Alternative Phone', width: 170 },
+  { field: 'nrc', headerName: 'NRC', width: 120 },
+  { field: 'income', headerName: 'Income', width: 120 },
   {
     field: "action",
     headerName: "Action",
@@ -74,8 +49,57 @@ const columns = [
       return <Button onClick={onClick}>Click</Button>;
     }
   },
- 
 ];
+
+// const columns = [
+//   { field: 'id', headerName: 'ID', width: 70 },
+//   { 
+//     field: 'firstName', 
+//     headerName: 'First name', 
+//     width: 130 ,
+//     renderCell: (params) => {
+//       const onClick = (e) => {
+//         return alert(JSON.stringify(params.row, null, 4));
+//       };
+//       const row = params.row
+//       const profileLink = `/borrower-profile/${row.id}`;
+//       return  <Link to={profileLink}>View Profile</Link>;
+//     }
+//   },
+//   { field: 'lastName', headerName: 'Last name', width: 130 },
+//   {
+//     field: 'age',
+//     headerName: 'Age',
+//     type: 'number',
+//     width: 90,
+//   },
+//   {
+//     field: 'fullName',
+//     headerName: 'Full name',
+//     description: 'This column has a value getter and is not sortable.',
+//     sortable: false,
+//     width: 160,
+//     valueGetter: (params) =>
+//       `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+//   },
+//   {
+//     field: "action",
+//     headerName: "Action",
+//     sortable: false,
+//     disableClickEventBubbling: true,
+//     disableSelectionOnClick:true,
+//     renderCell: (params) => {
+//       const onClick = (e) => {
+//         const api= params.api;
+//         console.log(params.row)
+//         return alert(JSON.stringify(params.row, null, 4));
+//       };
+
+//       return <Button onClick={onClick}>Click</Button>;
+//     }
+//   },
+ 
+// ];
 
 const rows2 = [
   { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
@@ -128,8 +152,8 @@ const Borrower = () => {
         console.error('Error fetching data:', error);
       }
     };
-    // fetchData();
-    setRows(rows2)
+    fetchData();
+    // setRows(rows2)
   }, []);
 
   
@@ -166,7 +190,7 @@ const Borrower = () => {
             )}
           </Stack>
 
-          <DataGrid
+          <DataGrid sx={{maxWidth: 1040}}
             rowSelectionModel={rowSelectionModel}
             onRowSelectionModelChange={handleSelectionChange}
             disableRowSelectionOnClick
