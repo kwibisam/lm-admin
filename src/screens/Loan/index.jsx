@@ -1,10 +1,10 @@
 import AddIcon from "@mui/icons-material/Add";
-import MoneyOutlinedIcon from '@mui/icons-material/MoneyOutlined';
-import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
-import TaskOutlinedIcon from '@mui/icons-material/TaskOutlined';
-import BookmarkAddedOutlinedIcon from '@mui/icons-material/BookmarkAddedOutlined';
+import MoneyOutlinedIcon from "@mui/icons-material/MoneyOutlined";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
+import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+import BookmarkAddedOutlinedIcon from "@mui/icons-material/BookmarkAddedOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined';
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -16,7 +16,8 @@ import {
   Chip,
   IconButton,
   Tooltip,
-  MenuItem
+  MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -29,7 +30,7 @@ const columns = [
     field: "loanAmount",
     headerName: "LoanAmount",
     width: 130,
-    type:"number",
+    type: "number",
     renderCell: (params) => {
       const onClick = (e) => {
         return alert(JSON.stringify(params.row, null, 4));
@@ -39,13 +40,18 @@ const columns = [
       return <Link to={profileLink}>{row.loanAmount}</Link>;
     },
   },
-  { field: "interestAmount", headerName: "Interest Amount", width: 130,type:"number" },
-  {
-    field: "interestRate",
-    headerName: "Interest Rate",
-    type: "number",
-    width: 90,
-  },
+  // {
+  //   field: "interestAmount",
+  //   headerName: "Interest Amount",
+  //   width: 130,
+  //   type: "number",
+  // },
+  // {
+  //   field: "interestRate",
+  //   headerName: "Interest Rate",
+  //   type: "number",
+  //   width: 90,
+  // },
   {
     field: "duration",
     headerName: "Duration",
@@ -57,11 +63,11 @@ const columns = [
     width: 160,
   },
 
-  {
-    field: "repaymentAmount",
-    headerName: "RepaymentAmount",
-    width: 160,
-  },
+  // {
+  //   field: "repaymentAmount",
+  //   headerName: "RepaymentAmount",
+  //   width: 160,
+  // },
   {
     field: "startDate",
     headerName: "StartDate",
@@ -74,39 +80,40 @@ const columns = [
     width: 160,
   },
 
-  {
-    field: "loanBalance",
-    headerName: "LoanBalance",
-    width: 160,
-  },
+  // {
+  //   field: "loanBalance",
+  //   headerName: "LoanBalance",
+  //   width: 160,
+  // },
 
-  {
-    field: "totalPayOff",
-    headerName: "TotalPayOff",
-    width: 160,
-  },
+  // {
+  //   field: "totalPayOff",
+  //   headerName: "TotalPayOff",
+  //   width: 160,
+  // },
 
   {
     field: "isDisbursed",
     headerName: "IsDisbursed",
     width: 160,
   },
-  {
-    field: "action",
-    headerName: "Action",
-    sortable: false,
-    disableClickEventBubbling: true,
-    disableSelectionOnClick: true,
-    renderCell: (params) => {
-      const onClick = (e) => {
-        const api = params.api;
-        console.log(params.row);
-        return alert(JSON.stringify(params.row, null, 4));
-      };
 
-      return <Button onClick={onClick}>Approve</Button>;
-    },
-  },
+  // {
+  //   field: "action",
+  //   headerName: "Action",
+  //   sortable: false,
+  //   disableClickEventBubbling: true,
+  //   disableSelectionOnClick: true,
+  //   renderCell: (params) => {
+  //     const onClick = (e) => {
+  //       const api = params.api;
+  //       console.log(params.row);
+  //       return alert(JSON.stringify(params.row, null, 4));
+  //     };
+
+  //     return <Button onClick={onClick}>Approve</Button>;
+  //   },
+  // },
 ];
 
 const rows2 = [
@@ -127,24 +134,30 @@ const Loan = () => {
   const [rows, setRows] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [filterCount,setFilterCount]=useState({
+    active:0,
+    completed:0,
+    approved:0
+  })
+  
 
   const navigate = useNavigate();
 
   const handleOnClick = () => {};
   const handleOnDisburse = () => {
-    if(rowSelectionModel.length == 1) {
-      const id = rowSelectionModel[0]
-      navigate(`/disburse-loan/${id}`)
+    if (rowSelectionModel.length == 1) {
+      const id = rowSelectionModel[0];
+      navigate(`/disburse-loan/${id}`);
     }
-    
   };
 
   const handleOnPay = () => {
-    if(rowSelectionModel.length == 1) {
-      const id = rowSelectionModel[0]
-      navigate(`/pay-loan/${id}`)
+    if (rowSelectionModel.length == 1) {
+      const id = rowSelectionModel[0];
+      navigate(`/pay-loan/${id}`);
     }
-    
   };
 
   const handleOnDelete = () => {
@@ -164,19 +177,63 @@ const Loan = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/v1/loans");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setRows(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const filterRows = (filter) => {
+    switch (filter) {
+      case "approved":
+        setFilteredRows(rows.filter(row => row.status.toLowerCase() === "approved"));
+        break;
+      case "active":
+        setFilteredRows(rows.filter(row => row.isDisbursed === true));
+        break;
+      
+      case "completed":
+        setFilteredRows(rows.filter(row => row.status.toLowerCase() === "completed"));
+        break;
+      default:
+        setFilteredRows(rows); // Default to all rows
+        break;
+    }
+  };
+
+  const countsByFilter = (rows) => {
+    const approved = rows.filter(row => row.status.toLowerCase() === "approved").length
+    const active = rows.filter(row => row.isDisbursed === true).length
+    const completed = rows.filter(row => row.status.toLowerCase() === "completed").length
+    console.log("completed",completed)
+    setFilterCount({
+      approved:approved,
+      active:active,
+      completed:completed
+    })
+
+  };
+
+  // Function to handle filter chip click
+  const handleFilterClick = (filter) => {
+    filterRows(filter);
+  };
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://localhost:8080/api/v1/loans");
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
+      const data = await response.json();
+      setRows(data);
+      countsByFilter(data)
+      setFilteredRows(data);
+     
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
     fetchData();
     // setRows(rows2);
   }, []);
@@ -184,87 +241,115 @@ const Loan = () => {
   return (
     <Box m="20px">
       {/* HEADER */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        p={1}
-        bgcolor={colors.primary[600]}
-      >
-        <Typography variant="h1">Loans</Typography>
-
-        <Fab
-          variant="extended"
-          color={colors.primary[400]}
-          size="medium"
-          onClick={() => {
-            navigate("/create-loan");
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 400,
           }}
         >
-          <AddIcon sx={{ mr: 1 }} />
-          {/* <Typography variant='caption'>NEW</Typography> */}
-          ADD NEW
-        </Fab>
-      </Box>
+          <CircularProgress sx={{color: colors.primary[400]}} />
+        </Box>
+      ) : (
+        <>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            p={1}
+          >
+            <Typography variant="h1" sx={{color: colors.primary}}>Manage Loans</Typography>
 
-      {/* MAIN-SECTION */}
-      <Box>
-        <Stack direction="row" spacing={1} marginTop={1}>
-        <Chip
-            avatar={<Avatar>34</Avatar>}
-            label="ALL"
-            onClick={handleOnClick}
-            on
-          />
-          <Chip label="RECENT" onClick={handleOnClick} />
-          <Chip label="APPROVED" onClick={handleOnClick} />
-          <Chip label="ACTIVE" onClick={handleOnClick} />
-          <Chip label="COMPLETED" onClick={handleOnClick}  avatar={<Avatar>14</Avatar>}/>
-        </Stack>
+            <Fab
+              variant="extended"
+              color={colors.primary[400]}
+              size="medium"
+              onClick={() => {
+                navigate("/create-loan");
+              }}
+            >
+              <AddIcon sx={{ mr: 1 }} />
+              {/* <Typography variant='caption'>NEW</Typography> */}
+              ADD NEW
+            </Fab>
+          </Box>
 
-        <div style={{ height: 400, width: "100%", marginTop: 8 }}>
-          <Stack direction="row" spacing={1}>
-            {showDeleteButton && (
-              <Tooltip title="Delete">
-                <IconButton aria-label="delete" onClick={handleOnDelete}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-            <Tooltip title="Disburse">
-                <IconButton aria-label="disburse" onClick={handleOnDisburse}>
-                  <BookmarkAddedOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Add Payment">
-                <IconButton aria-label="add payment" onClick={handleOnPay}>
-                  <PostAddOutlinedIcon />
-                </IconButton>
-              </Tooltip>
+          {/* MAIN-SECTION */}
 
-              <Tooltip title="APPROVE">
-                <IconButton aria-label="approve" onClick={handleOnDelete}>
-                  <TaskOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-          </Stack>
+          <Box>
+            <Stack direction="row" spacing={1} marginTop={1}>
+              <Chip
+                avatar={<Avatar>{rows.length}</Avatar>}
+                label="ALL"
+                onClick={() => handleFilterClick("all")}
+                on
+              />    
+              {/* <Chip label="RECENT" onClick={() => handleFilterClick()} /> */}
+              <Chip
+                avatar={<Avatar>{filterCount.approved}</Avatar>}
+                label="APPROVED" onClick={() => handleFilterClick("approved")} />
 
-          <DataGrid sx={{maxWidth: 1040}}
-            rowSelectionModel={rowSelectionModel}
-            onRowSelectionModelChange={handleSelectionChange}
-            disableRowSelectionOnClick
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-          />
-        </div>
-      </Box>
+
+              <Chip 
+                avatar={<Avatar>{filterCount.active}</Avatar>}
+              label="ACTIVE" onClick={() => handleFilterClick("active")} />
+
+              <Chip
+               avatar={<Avatar>{filterCount.completed}</Avatar>}
+                label="COMPLETED"
+                onClick={() => handleFilterClick("completed")}
+              />
+            </Stack>
+
+            <div style={{ height: 400, width: "100%", marginTop: 8 }}>
+
+              {/* <Stack direction="row" spacing={1}>
+                {showDeleteButton && (
+                  <Tooltip title="Delete">
+                    <IconButton aria-label="delete" onClick={handleOnDelete}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                <Tooltip title="Disburse">
+                  <IconButton aria-label="disburse" onClick={handleOnDisburse}>
+                    <BookmarkAddedOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Add Payment">
+                  <IconButton aria-label="add payment" onClick={handleOnPay}>
+                    <PostAddOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="APPROVE">
+                  <IconButton aria-label="approve" onClick={handleOnDelete}>
+                    <TaskOutlinedIcon />
+                  </IconButton>
+                </Tooltip>
+              </Stack> */}
+
+              <DataGrid
+                sx={{ maxWidth: 1040 }}
+                rowSelectionModel={rowSelectionModel}
+                onRowSelectionModelChange={handleSelectionChange}
+                disableRowSelectionOnClick
+                rows={filteredRows}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection
+              />
+            </div>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
