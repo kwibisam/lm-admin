@@ -12,14 +12,15 @@ import {
   Select,
   MenuItem,
   Button,
-  Chip
+  Chip,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import { tokens } from "../../theme";
 const LoanDetails = () => {
   const { id } = useParams();
   const theme = useTheme();
+  const navigate = useNavigate()
   const colors = tokens(theme.palette.mode);
 
   const [loan, setLoan] = useState({});
@@ -28,34 +29,32 @@ const LoanDetails = () => {
   const handleStatusChange = (event) => {
     // setLoanStatus(event.target.value);
     setLoan({
-        ...loan,
-        ['status']: event.target.value
-    })
+      ...loan,
+      ["status"]: event.target.value,
+    });
   };
 
   const handleUpdateStatus = async () => {
-    try{
-        const patch = {
-            status: loan.status
-        }
+    try {
+      const patch = {
+        status: loan.status,
+      };
 
-        const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`,{
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(patch)
-        })
+      const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
 
-        if(!response.ok) {
-            alert("Update failed")
-            return;
-        }
-        alert("update success")
-        setShouldRemount(true);
-    } catch(err) {
-        alert('something went wrong')
+      if (!response.ok) {
+        alert("Update failed");
+        return;
+      }
+      alert("update success");
+      setShouldRemount(true);
+    } catch (err) {
+      alert("something went wrong");
     }
-   
-
   };
 
   useEffect(() => {
@@ -89,17 +88,43 @@ const LoanDetails = () => {
           <Typography>Loan ID</Typography>
           <Typography variant="caption"> {id}</Typography>
         </Box>
-        <Box display="flex" justifyContent="end">
+        <Box display="flex" justifyContent="end"></Box>
 
-        </Box>
         <Box maxWidth="md">
+          <Box>
+            <Fab
+              variant="extended"
+              color={colors.primary[400]}
+              size="medium"
+              onClick={() => {
+                navigate(`/disburse-loan/${id}`);
+              }}
+            >
+              <AddIcon sx={{ mr: 1 }} />
+              {/* <Typography variant='caption'>NEW</Typography> */}
+              DISBURSE
+            </Fab>
+
+            <Fab
+              variant="extended"
+              color={colors.primary[400]}
+              size="medium"
+              onClick={() => {
+                navigate(`/pay-loan/${id}`)
+              }}
+            >
+              <AddIcon sx={{ mr: 1 }} />
+              {/* <Typography variant='caption'>NEW</Typography> */}
+              ADD PAYMENT
+            </Fab>
+          </Box>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Loan Amount"
                 variant="outlined"
                 fullWidth
-                value={7000} // Replace with loan amount from data
+                value={loan.loanAmount}
                 disabled
               />
             </Grid>
@@ -116,14 +141,14 @@ const LoanDetails = () => {
                   <MenuItem value="Approved">Approved</MenuItem>
                 </Select>
               </FormControl>
-              <Chip label="UPDATE" onClick={handleUpdateStatus} sx={{m:1}} />
+              <Chip label="UPDATE" onClick={handleUpdateStatus} sx={{ m: 1 }} />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Interest Rate"
                 variant="outlined"
                 fullWidth
-                value={20} // Replace with interest rate from data
+                value={loan.interestRate} // Replace with interest rate from data
                 disabled
               />
             </Grid>
@@ -132,7 +157,7 @@ const LoanDetails = () => {
                 label="Duration"
                 variant="outlined"
                 fullWidth
-                value={5} // Replace with duration from data
+                value={loan.duration}
                 disabled
               />
             </Grid>
@@ -141,7 +166,7 @@ const LoanDetails = () => {
                 label="Repayment Amount"
                 variant="outlined"
                 fullWidth
-                value={1680} // Replace with repayment amount from data
+                value={loan.repaymentAmount} // Replace with repayment amount from data
                 disabled
               />
             </Grid>
@@ -150,7 +175,7 @@ const LoanDetails = () => {
                 label="Purpose"
                 variant="outlined"
                 fullWidth
-                value="ghjkl" // Replace with purpose from data
+                value={loan.purpose}
                 disabled
               />
             </Grid>

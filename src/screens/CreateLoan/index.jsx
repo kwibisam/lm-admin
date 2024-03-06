@@ -46,7 +46,6 @@ const CreateLoan = () => {
     const value = event.target.value;
     const name = event.target.name;
 
-    
     setLoanData({
       ...loanData, 
       [name]: value,
@@ -65,7 +64,8 @@ const CreateLoan = () => {
           ...loanData,
           interestRate: loanP.interestRate,
           interestAmount: i,
-          totalPayOff: totalPayment
+          totalPayOff: totalPayment,
+          loanAmount: value
         });
       }
     }
@@ -85,15 +85,20 @@ const CreateLoan = () => {
     const value = event.target.value;
     const loanP = loanProducts.find((p) => p.frequency === value);
     const i = loanP.interestRate*loanData.loanAmount
+    
     // const tp = loanData.loanAmount+i
     const totalPayment = Math.floor(i) + Math.floor(loanData.loanAmount);
+    const repayAmt = Math.floor(totalPayment)/Math.floor(loanData.duration)
+
     setLoanData({
       ...loanData,
       frequency: value,
       interestRate: loanP.interestRate*100,
       interestAmount: i,
-      totalPayOff: totalPayment
+      totalPayOff: totalPayment,
+      repaymentAmount: repayAmt
     });
+    
     setLoanProd(loanP)
 
   };
