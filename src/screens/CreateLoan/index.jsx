@@ -127,18 +127,22 @@ const CreateLoan = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/borrowers/${id}`,
+        `http://localhost:8080/api/v1/borrowers?nrc=${id}`,
         {
           method: "GET",
         }
       );
 
       if (!response.ok) {
-        const message = await response.text();
-        throw new Error(`Error fetching borrower: ${message}`);
+        const message =await response.text();
+
+        // alert(message)
+        console.log(JSON.parse(message).message)
+        throw new Error(JSON.parse(message).message);
       }
 
-      const data = await response.json();
+      const dataList = await response.json();
+      const data =dataList[0]
       setBorrower({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -146,7 +150,7 @@ const CreateLoan = () => {
         id: data.id,
       });
     } catch (err) {
-      alert("Something went wrong: " + err.message);
+      alert("Something went wrong "+err.message);
     }
   };
 
@@ -164,12 +168,7 @@ const CreateLoan = () => {
         frequency: loanData.frequency,
       };
 
-      // Set the request headers
-      const headers = {
-        "Content-Type": "application/json",
-        borrowerId: 3,
-      };
-
+   
       console.log("id", borrower.id);
       const response = await fetch("http://localhost:8080/api/v1/loans", {
         method: "POST",
@@ -181,7 +180,8 @@ const CreateLoan = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error creating loan: ${response.status}`);
+        const message =await response.text();
+        throw new Error(JSON.parse(message).message);
       }
 
       alert("Loan Created!");
@@ -190,7 +190,7 @@ const CreateLoan = () => {
     } catch (error) {
       console.error("Error creating loan:", error);
       setError(error.message); // Set error state for rendering
-      alert("Something went wrong while creating the loan.");
+      alert(error.message);
     }
   };
 
@@ -203,7 +203,8 @@ const CreateLoan = () => {
           "http://localhost:8080/api/v1/loan-products"
         );
         if (!response.ok) {
-          throw new Error(`Error fetching loan products: ${response.status}`);
+          const message =await response.text();
+          throw new Error(JSON.parse(message).message);
         }
         const data = await response.json();
         setLoanProducts(data);
