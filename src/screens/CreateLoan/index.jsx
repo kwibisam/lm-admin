@@ -11,10 +11,13 @@ import {
   FormControl,
   Button,
   useTheme,
+  Card,
+  CardContent,
 } from "@mui/material";
 
 import { Link, useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
+import SearchIcon from '@mui/icons-material/Search';
 
 const CreateLoan = () => {
   const navigate = useNavigate();
@@ -237,52 +240,65 @@ const CreateLoan = () => {
       >
         <Typography variant="h1">Create Loan</Typography>
       </Box>
-      <Box display="flex" justifyContent="center">
-        <Box bgcolor="#b5b5b5" p={2} flexGrow={2}>
-          <Box>
-            <Typography variant="h2">Loan Summary</Typography>
-            <Box>
-              <Typography variant="h6">Loan Amount</Typography>
-              <Typography variant="body2">{loanData.loanAmount}</Typography>
-              <Divider />
-              <Typography variant="h6">Duration</Typography>
-              <Typography variant="body2">
-                {loanData.duration} {loanProd ? loanProd.duration : ""}
-              </Typography>
-              <Divider />
-              <Typography variant="h6">Interest Rate</Typography>
-              <Typography variant="body2">
-                {loanData.interestRate} {"%"}
-              </Typography>
-              <Divider />
-              <Typography variant="h6">Interest Amount</Typography>
-              <Typography variant="body2">{loanData.interestAmount}</Typography>
-              <Divider />
-              <Typography variant="h6">Repayment</Typography>
-              <Typography variant="body2">
-                {loanData.repaymentAmount}
-              </Typography>
-              <Divider />
-              <Typography variant="h6">Total Payoff</Typography>
-              <Typography variant="body2">{loanData.totalPayOff}</Typography>
-              <Divider />
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="h2">Borrower Info</Typography>
+      <Box display="flex" gap={4} justifyContent="center">
+        <Box
+          flexGrow={2}
+          sx={{
+            borderRadius: "1em",
+          }}
+        >
+          <Card>
+            <CardContent>
+              <Box>
+                <Typography variant="h3">Loan Summary</Typography>
+                <Box>
+                  <Typography variant="h5">Loan Amount</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>{loanData.loanAmount}</Typography>
+                  <Divider sx={{marginY:1}}/>
+                  <Typography variant="h5">Duration</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>
+                    {loanData.duration} {loanProd ? loanProd.duration : ""}
+                  </Typography>
+                  <Divider sx={{marginY:1}}/>
+                  <Typography variant="h5">Interest Rate</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>
+                    {loanData.interestRate} {"%"}
+                  </Typography>
+                  <Divider sx={{marginY:1}}/>
+                  <Typography variant="h5">Interest Amount</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>
+                    {loanData.interestAmount}
+                  </Typography>
+                  <Divider sx={{marginY:1}}/>
+                  <Typography variant="h5">Repayment</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>
+                    {loanData.repaymentAmount}
+                  </Typography>
+                  <Divider sx={{marginY:1}}/>
+                  <Typography variant="h5">Total Payoff</Typography>
+                  <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>
+                    {loanData.totalPayOff}
+                  </Typography>
+                  <Divider sx={{marginY:1}}/>
+                </Box>
+              </Box>
+              <Box>
+                <Typography variant="h3">Borrower Info</Typography>
 
-            <Typography variant="h6">First Name</Typography>
-            <Typography variant="body2">{borrower.firstName}</Typography>
-            <Divider />
+                <Typography variant="h5">First Name</Typography>
+                <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>{borrower.firstName}</Typography>
+                <Divider sx={{marginY:1}}/>
 
-            <Typography variant="h6">Last Name</Typography>
-            <Typography variant="body2">{borrower.lastName}</Typography>
-            <Divider />
+                <Typography variant="h5">Last Name</Typography>
+                <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>{borrower.lastName}</Typography>
+                <Divider sx={{marginY:1}}/>
 
-            <Typography variant="h6">Phone Number</Typography>
-            <Typography variant="body2">{borrower.phone}</Typography>
-            <Divider />
-          </Box>
+                <Typography variant="h5">Phone Number</Typography>
+                <Typography variant="body2" sx={{fontWeight:500,fontSize:20}}>{borrower.phone}</Typography>
+                <Divider sx={{marginY:1}}/>
+              </Box>
+            </CardContent>
+          </Card>
         </Box>
 
         <Box>
@@ -299,8 +315,9 @@ const CreateLoan = () => {
               onChange={onChangeId}
             />
             <Button
+            startIcon={<SearchIcon />}
               sx={{
-                bgcolor: colors.grey[100],
+                bgcolor: colors.blueAccent[300],
                 color: colors.primary[400],
                 m: "2px",
               }}
