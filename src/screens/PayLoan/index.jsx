@@ -8,21 +8,28 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button
+  Button,
+  useTheme,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { tokens } from "../../theme";
 const PayLoan = () => {
   const { id } = useParams();
 
   const [paymentData, setPaymentData] = useState({
-    amountPaid: null,
-    dateOfPayment: null,
-    fromAccount: null,
-    transactionId: null,
-    paymentMode: null,
-    paymentCarrier: null
+    amountPaid: "",
+    dateOfPayment: "",
+    fromAccount: "",
+    transactionId: "",
+    paymentMode: "Mobile Money",
+    paymentCarrier: "AirtelMoney"
   });
 
+  const [loan,setLoan] = useState({})
+  const [isLoading, setLoading] = useState(true)
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleChange = (event) => {
     const name = event.target.name
@@ -56,45 +63,90 @@ const PayLoan = () => {
       alert("Something went wrong")
     }
   }
+
+  const fetchLoan = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`,{
+        method: 'GET'
+      })
+      if(!response.ok){
+        const msg = response.text()
+        alert(msg)
+        return
+      }
+      const data = await response.json()
+      setLoan(data)
+      setPaymentData({
+        ...paymentData,
+        amountPaid: data.repaymentAmount,
+
+      })
+    } catch (error) {
+      alert("something went wrong")
+      console.log(error)
+    } finally{
+      setLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchLoan()
+  }, [])
+
+  const inputStyles={
+    marginBottom:'1em',
+  }
   return (
-    <Box m="20px">
-      <Typography variant="h1">Loan Payment</Typography>
-      <Box>
+    <Box sx={{
+      bgcolor: colors.grey[100],
+      borderRadius: '1em',
+      paddingX: '2em',
+      paddingY: '1em',
+      m:'20px'
+    }}>
+      
+      <Box sx={{marginBottom:'1em', bgcolor: '#f9f9f9', borderRadius: '1em',padding:1}}>
+        <Typography variant="h1">Loan Payment</Typography>
+      </Box>
+      
+      <Box m="10px">
         <Box>
           <Typography>Loan ID</Typography>
-          <Typography variant="caption"> {id}</Typography>
+          <Typography variant="h5"> {id}</Typography>
         </Box>
       </Box>
+
+      <Box m="10px" display="flex" justifyContent='space-between'>
       <Box component="form">
-        <FormControl fullWidth>
-          <TextField type="number" name="amountPaid" value={paymentData.amountPaid} onChange={handleChange} label="AmountPaid" />
+
+        <FormControl fullWidth sx={inputStyles}>
+          <TextField variant="standard" type="number" name="amountPaid" value={paymentData.amountPaid} onChange={handleChange} label="AmountPaid" />
         </FormControl>
 
-        <FormControl fullWidth>
-          <InputLabel id="dateOfPay">Date Of Payment</InputLabel>
-          <TextField type="date"  name="dateOfPayment" labelId="dateOfPay" value={paymentData.dateOfPayment} onChange={handleChange}/>
+        <FormControl fullWidth sx={inputStyles}>
+          <TextField variant="standard" type="date" label="PaymentDate" name="dateOfPayment" value={paymentData.dateOfPayment} onChange={handleChange}/>
         </FormControl>
 
-        <FormControl fullWidth>
-          <TextField type="text" name="fromAccount" value={paymentData.fromAccount} onChange={handleChange} label="Source" />
+        <FormControl fullWidth sx={inputStyles}>
+          <TextField variant="standard" type="text" name="fromAccount" value={paymentData.fromAccount} onChange={handleChange} label="Source" />
         </FormControl>
 
         
-        <FormControl fullWidth>
-          <TextField type="text" name="transactionId" value={paymentData.transactionId} onChange={handleChange} label="Transaction ID" />
+        <FormControl fullWidth sx={inputStyles}>
+          <TextField variant="standard" type="text" name="transactionId" value={paymentData.transactionId} onChange={handleChange} label="Transaction ID" />
         </FormControl>
 
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={inputStyles}>
           <InputLabel id="mode">Payment Mode</InputLabel>
-          <Select labelId="mode" name="paymentMode" value={paymentData.paymentMode} onChange={handleChange}>
-            <MenuItem value="bank">Bank</MenuItem>
-            <MenuItem value="mobile_money">Mobile Money</MenuItem>
+          <Select variant="standard" labelId="mode" name="paymentMode" value={paymentData.paymentMode} onChange={handleChange}>
+            <MenuItem value="Bank">Bank</MenuItem>
+            <MenuItem value="Mobile Money">Mobile Money</MenuItem>
           </Select>
         </FormControl>
 
-        <FormControl fullWidth>
+        <FormControl fullWidth sx={inputStyles}>
           <InputLabel id="carrier">Carrier</InputLabel>
-          <Select labelId="carrier" name="paymentCarrier" value={paymentData.paymentCarrier} onChange={handleChange}>
+          <Select variant="standard" defaultValue=" " labelId="carrier" name="paymentCarrier" value={paymentData.paymentCarrier} onChange={handleChange}>
             <MenuItem value="Zanaco">Zanaco</MenuItem>
             <MenuItem value="Absa">Absa</MenuItem>
             <MenuItem value="MoMo">MOMO</MenuItem>
@@ -103,12 +155,19 @@ const PayLoan = () => {
         </FormControl>
        
         <FormControl fullWidth>
-            <Button type='button' onClick={handleSubmit}>Save</Button>
+            <Button sx={{bgcolor:colors.primary[400]}} type='button' onClick={handleSubmit}>Save</Button>
         </FormControl>
 
       </Box>
+        <Box flexGrow={2}>
+
+        </Box>
+     
+      </Box>
+      
     </Box>
   );
 };
+
 
 export default PayLoan;

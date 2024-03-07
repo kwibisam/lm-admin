@@ -13,6 +13,7 @@ import {
   MenuItem,
   Button,
   Chip,
+  CircularProgress,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,11 +21,14 @@ import { tokens } from "../../theme";
 const LoanDetails = () => {
   const { id } = useParams();
   const theme = useTheme();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const colors = tokens(theme.palette.mode);
 
   const [loan, setLoan] = useState({});
+  const [loanUpdate, setLoanUpdate] = useState({});
+
   const [shouldRemount, setShouldRemount] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleStatusChange = (event) => {
     // setLoanStatus(event.target.value);
@@ -60,6 +64,7 @@ const LoanDetails = () => {
   useEffect(() => {
     const fetchLoan = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(
           `http://localhost:8080/api/v1/loans/${id}`
         );
@@ -73,61 +78,74 @@ const LoanDetails = () => {
         setLoan(data);
       } catch (err) {
         alert("Something went wrong");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchLoan();
   }, [shouldRemount]);
 
-  return (
-    <Box m="20px">
-      <Typography variant="h1">Loan Details</Typography>
-      <Box>
+  return isLoading ? (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: 400,
+      }}
+    >
+      <CircularProgress sx={{ color: colors.primary[400] }} />
+    </Box>
+  ) : (
+    <>
+      <Box m="20px">
+        <Typography variant="h1">Manage Loan</Typography>
         <Box>
-          <Typography>Basic Details</Typography>
-          <Typography>Loan ID</Typography>
-          <Typography variant="caption"> {id}</Typography>
-        </Box>
-        <Box display="flex" justifyContent="end"></Box>
-
-        <Box maxWidth="md">
           <Box>
-            <Fab
-              variant="extended"
-              color={colors.primary[400]}
-              size="medium"
-              onClick={() => {
-                navigate(`/disburse-loan/${id}`);
-              }}
-            >
-              <AddIcon sx={{ mr: 1 }} />
-              {/* <Typography variant='caption'>NEW</Typography> */}
-              DISBURSE
-            </Fab>
+            <Typography>Basic Details</Typography>
+            <Typography>Loan ID</Typography>
+            <Typography variant="h5"> {id}</Typography>
 
-            <Fab
-              variant="extended"
-              color={colors.primary[400]}
-              size="medium"
-              onClick={() => {
-                navigate(`/pay-loan/${id}`)
-              }}
-            >
-              <AddIcon sx={{ mr: 1 }} />
-              {/* <Typography variant='caption'>NEW</Typography> */}
-              ADD PAYMENT
-            </Fab>
+            <Typography>Loan State</Typography>
+            <Typography variant="caption" sx={{fontSize: 18}}> {loan.status}</Typography>
           </Box>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                label="Loan Amount"
-                variant="outlined"
-                fullWidth
-                value={loan.loanAmount}
-                disabled
-              />
-            </Grid>
+          <Box display="flex" justifyContent="end"></Box>
+
+          <Box maxWidth="md">
+            <Box>
+              {loan.status.toLowerCase() === "approved" &&
+                !loan.isDisbursed && (
+                  <Fab
+                    variant="extended"
+                    color={colors.primary[400]}
+                    size="medium"
+                    onClick={() => {
+                      navigate(`/disburse-loan/${id}`);
+                    }}
+                  >
+                    <AddIcon sx={{ mr: 1 }} />
+                    {/* <Typography variant='caption'>NEW</Typography> */}
+                    DISBURSE
+                  </Fab>
+                )}
+
+              {loan.isDisbursed && loan.status.toLowerCase() === "approved" && (
+                <Fab
+                  variant="extended"
+                  color={colors.primary[400]}
+                  size="medium"
+                  onClick={() => {
+                    navigate(`/pay-loan/${id}`);
+                  }}
+                >
+                  <AddIcon sx={{ mr: 1 }} />
+                  {/* <Typography variant='caption'>NEW</Typography> */}
+                  ADD PAYMENT
+                </Fab>
+              )}
+            </Box>
+
             <Grid item xs={12} md={6}>
               <FormControl variant="outlined" fullWidth>
                 <InputLabel id="loan-status-label">Loan Status</InputLabel>
@@ -143,48 +161,61 @@ const LoanDetails = () => {
               </FormControl>
               <Chip label="UPDATE" onClick={handleUpdateStatus} sx={{ m: 1 }} />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Interest Rate"
-                variant="outlined"
-                fullWidth
-                value={loan.interestRate} // Replace with interest rate from data
-                disabled
-              />
+
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Loan Amount"
+                  variant="outlined"
+                  fullWidth
+                  value={loan.loanAmount}
+                  disabled
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  label="Interest Rate"
+                  variant="outlined"
+                  fullWidth
+                  value={loan.interestRate} // Replace with interest rate from data
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Duration"
+                  variant="outlined"
+                  fullWidth
+                  value={loan.duration}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Repayment Amount"
+                  variant="outlined"
+                  fullWidth
+                  value={loan.repaymentAmount} // Replace with repayment amount from data
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Purpose"
+                  variant="outlined"
+                  fullWidth
+                  value={loan.purpose}
+                  disabled
+                />
+              </Grid>
+              {/* Add more fields for loan details */}
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Duration"
-                variant="outlined"
-                fullWidth
-                value={loan.duration}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Repayment Amount"
-                variant="outlined"
-                fullWidth
-                value={loan.repaymentAmount} // Replace with repayment amount from data
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Purpose"
-                variant="outlined"
-                fullWidth
-                value={loan.purpose}
-                disabled
-              />
-            </Grid>
-            {/* Add more fields for loan details */}
-          </Grid>
-          {/* Additional sections for borrower information, loan details, etc. */}
+            {/* Additional sections for borrower information, loan details, etc. */}
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

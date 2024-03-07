@@ -136,12 +136,11 @@ const Loan = () => {
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filteredRows, setFilteredRows] = useState([]);
-  const [filterCount,setFilterCount]=useState({
-    active:0,
-    completed:0,
-    approved:0
-  })
-  
+  const [filterCount, setFilterCount] = useState({
+    active: 0,
+    completed: 0,
+    approved: 0,
+  });
 
   const navigate = useNavigate();
 
@@ -180,14 +179,18 @@ const Loan = () => {
   const filterRows = (filter) => {
     switch (filter) {
       case "approved":
-        setFilteredRows(rows.filter(row => row.status.toLowerCase() === "approved"));
+        setFilteredRows(
+          rows.filter((row) => row.status.toLowerCase() === "approved")
+        );
         break;
       case "active":
-        setFilteredRows(rows.filter(row => row.isDisbursed === true));
+        setFilteredRows(rows.filter((row) => row.isDisbursed === true));
         break;
-      
+
       case "completed":
-        setFilteredRows(rows.filter(row => row.status.toLowerCase() === "completed"));
+        setFilteredRows(
+          rows.filter((row) => row.status.toLowerCase() === "completed")
+        );
         break;
       default:
         setFilteredRows(rows); // Default to all rows
@@ -196,16 +199,19 @@ const Loan = () => {
   };
 
   const countsByFilter = (rows) => {
-    const approved = rows.filter(row => row.status.toLowerCase() === "approved").length
-    const active = rows.filter(row => row.isDisbursed === true).length
-    const completed = rows.filter(row => row.status.toLowerCase() === "completed").length
-    console.log("completed",completed)
+    const approved = rows.filter(
+      (row) => row.status.toLowerCase() === "approved"
+    ).length;
+    const active = rows.filter((row) => row.isDisbursed === true).length;
+    const completed = rows.filter(
+      (row) => row.status.toLowerCase() === "completed"
+    ).length;
+    console.log("completed", completed);
     setFilterCount({
-      approved:approved,
-      active:active,
-      completed:completed
-    })
-
+      approved: approved,
+      active: active,
+      completed: completed,
+    });
   };
 
   // Function to handle filter chip click
@@ -222,9 +228,8 @@ const Loan = () => {
       }
       const data = await response.json();
       setRows(data);
-      countsByFilter(data)
+      countsByFilter(data);
       setFilteredRows(data);
-     
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -232,14 +237,21 @@ const Loan = () => {
     }
   };
 
-
   useEffect(() => {
     fetchData();
     // setRows(rows2);
   }, []);
 
   return (
-    <Box m="20px">
+    <Box
+      sx={{
+        bgcolor: colors.grey[100],
+        borderRadius: "1em",
+        paddingX: "2em",
+        paddingY: "1em",
+        m: "20px",
+      }}
+    >
       {/* HEADER */}
       {isLoading ? (
         <Box
@@ -250,7 +262,7 @@ const Loan = () => {
             height: 400,
           }}
         >
-          <CircularProgress sx={{color: colors.primary[400]}} />
+          <CircularProgress sx={{ color: colors.primary[400] }} />
         </Box>
       ) : (
         <>
@@ -260,7 +272,18 @@ const Loan = () => {
             alignItems="center"
             p={1}
           >
-            <Typography variant="h1" sx={{color: colors.primary}}>Manage Loans</Typography>
+            <Box
+              sx={{
+                marginBottom: "1em",
+                bgcolor: "#f9f9f9",
+                borderRadius: "1em",
+                padding: 1,
+              }}
+            >
+              <Typography variant="h1" sx={{ color: colors.primary }}>
+                Manage Loans
+              </Typography>
+            </Box>
 
             <Fab
               variant="extended"
@@ -274,6 +297,7 @@ const Loan = () => {
               {/* <Typography variant='caption'>NEW</Typography> */}
               ADD NEW
             </Fab>
+
           </Box>
 
           {/* MAIN-SECTION */}
@@ -285,26 +309,28 @@ const Loan = () => {
                 label="ALL"
                 onClick={() => handleFilterClick("all")}
                 on
-              />    
+              />
               {/* <Chip label="RECENT" onClick={() => handleFilterClick()} /> */}
               <Chip
                 avatar={<Avatar>{filterCount.approved}</Avatar>}
-                label="APPROVED" onClick={() => handleFilterClick("approved")} />
-
-
-              <Chip 
-                avatar={<Avatar>{filterCount.active}</Avatar>}
-              label="ACTIVE" onClick={() => handleFilterClick("active")} />
+                label="APPROVED"
+                onClick={() => handleFilterClick("approved")}
+              />
 
               <Chip
-               avatar={<Avatar>{filterCount.completed}</Avatar>}
+                avatar={<Avatar>{filterCount.active}</Avatar>}
+                label="ACTIVE"
+                onClick={() => handleFilterClick("active")}
+              />
+
+              <Chip
+                avatar={<Avatar>{filterCount.completed}</Avatar>}
                 label="COMPLETED"
                 onClick={() => handleFilterClick("completed")}
               />
             </Stack>
 
             <div style={{ height: 400, width: "100%", marginTop: 8 }}>
-
               {/* <Stack direction="row" spacing={1}>
                 {showDeleteButton && (
                   <Tooltip title="Delete">
