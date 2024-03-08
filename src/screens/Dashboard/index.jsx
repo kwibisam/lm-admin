@@ -28,14 +28,14 @@ const Dashboard = () => {
         const response = await fetch(`${base_url}app/stats`)
         if(!response.ok){
           const msg = response.text
-          alert(msg)
-          return
+          throw new Error(JSON.parse(msg))
         }
 
         const data = await response.json()
         setStatsData(data)
       } catch (error) {
         console.log(error)
+        alert(error)
       }
     }
    fetchStats()
