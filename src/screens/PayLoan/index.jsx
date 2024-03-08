@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { tokens } from "../../theme";
+import { Link, useNavigate } from "react-router-dom";
 const PayLoan = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [paymentData, setPaymentData] = useState({
     amountPaid: "",
     dateOfPayment: "",
@@ -52,15 +53,15 @@ const PayLoan = () => {
       })
 
       if(!response.ok) {
-        const msg = response.text
-        alert(msg)
-        return
+        const message = await response.text()
+        throw new Error(JSON.parse(message).message);
       }
 
       alert("Payment Success!")
+      navigate(`/loan-details/${id}`)
     }catch(error) {
       console.log("theres was an error", error)
-      alert("Something went wrong")
+      alert("Something went wrong"+error.message)
     }
   }
 

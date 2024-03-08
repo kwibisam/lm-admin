@@ -62,10 +62,10 @@ const Dashboard = () => {
             <CardContent>
               <SellIcon sx={{color:colors.blueAccent[400], fontSize:36}}/>
               <Typography gutterBottom  sx={{fontWeight:900,color:colors.greenAccent[400]}} variant="h3" component="div">
-                {statsData.totalLoans}
+                {"K"}{statsData.portfolioSize} 
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                TotalLoans
+                PORTFOLIO SIZE
               </Typography>
             </CardContent>
           </Card>
