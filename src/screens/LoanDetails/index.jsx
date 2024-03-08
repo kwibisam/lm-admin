@@ -21,6 +21,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import { tokens } from "../../theme";
 const LoanDetails = () => {
+  const base_url = process.env.REACT_APP_BASE_URL
   const { id } = useParams();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const LoanDetails = () => {
         status: mutableLoan.status,
       };
 
-      const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`, {
+      const response = await fetch(`${base_url}loans/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
@@ -69,7 +70,7 @@ const LoanDetails = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:8080/api/v1/loans/${id}`
+          `${base_url}loans/${id}`
         );
         if (!response.ok) {
           alert("Could not fetch loan");

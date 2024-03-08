@@ -46,6 +46,7 @@ const CreateLoan = () => {
   });
 
   const [loanProduct, setLoanProduct] = useState(null);
+  const base_url = process.env.REACT_APP_BASE_URL
 
   const onChange = (event) => {
     const value = event.target.value;
@@ -127,7 +128,7 @@ const CreateLoan = () => {
     }
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/borrowers?nrc=${id}`,
+        `${base_url}borrowers?nrc=${id}`,
         {
           method: "GET",
         }
@@ -170,7 +171,7 @@ const CreateLoan = () => {
 
    
       console.log("id", borrower.id);
-      const response = await fetch("http://localhost:8080/api/v1/loans", {
+      const response = await fetch(`${base_url}loans`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -200,7 +201,7 @@ const CreateLoan = () => {
       setError(null);
       try {
         const response = await fetch(
-          "http://localhost:8080/api/v1/loan-products"
+          `${base_url}loan-products`
         );
         if (!response.ok) {
           const message =await response.text();
@@ -312,7 +313,7 @@ const CreateLoan = () => {
               variant="filled"
               id="borrower_id"
               name="borrower_id"
-              value={borrower.id}
+              value={borrower.nrc}
               onChange={onChangeId}
             />
             <Button

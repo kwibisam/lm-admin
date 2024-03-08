@@ -18,14 +18,14 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [statsData,setStatsData] = useState({
-
   })
 
+  const base_url = process.env.REACT_APP_BASE_URL
   useEffect(()=>{
 
     const fetchStats = async () =>{
       try {
-        const response = await fetch("http://localhost:8080/api/v1/app/stats")
+        const response = await fetch(`${base_url}app/stats`)
         if(!response.ok){
           const msg = response.text
           alert(msg)

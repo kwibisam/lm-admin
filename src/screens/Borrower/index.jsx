@@ -142,14 +142,17 @@ const Borrower = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/borrowers');
+        const base_url = process.env.REACT_APP_BASE_URL
+        const response = await fetch(`${base_url}borrowers`);
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          const message = await response.text()
+          throw new Error(JSON.parse(message));
         }
         const data = await response.json();
         setRows(data)
       } catch (error) {
         console.error('Error fetching data:', error);
+        alert(error)
       }
     };
     fetchData();

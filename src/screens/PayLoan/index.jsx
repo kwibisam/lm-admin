@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { tokens } from "../../theme";
 import { Link, useNavigate } from "react-router-dom";
 const PayLoan = () => {
+  const base_url = process.env.REACT_APP_BASE_URL
   const { id } = useParams();
   const navigate = useNavigate();
   const [paymentData, setPaymentData] = useState({
@@ -43,7 +44,7 @@ const PayLoan = () => {
   const handleSubmit = async () => {
     console.log(paymentData)
     try{
-      const response = await fetch(`http://localhost:8080/api/v1/payments`, {
+      const response = await fetch(`${base_url}payments`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ const PayLoan = () => {
   const fetchLoan = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`,{
+      const response = await fetch(`${base_url}loans/${id}`,{
         method: 'GET'
       })
       if(!response.ok){

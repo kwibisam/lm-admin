@@ -129,6 +129,7 @@ const rows2 = [
 ];
 
 const Loan = () => {
+  const base_url = process.env.REACT_APP_BASE_URL
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [rows, setRows] = useState([]);
@@ -222,7 +223,7 @@ const Loan = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:8080/api/v1/loans");
+      const response = await fetch(`${base_url}loans`);
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }

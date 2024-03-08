@@ -20,6 +20,7 @@ const DisburseLoan = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const base_url = process.env.REACT_APP_BASE_URL
 
   const [disburseData, setdisburseData] = useState({
     transactionAmount: "",
@@ -45,7 +46,7 @@ const DisburseLoan = () => {
     console.log(disburseData);
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/loans/${id}/disbursement`,
+        `${base_url}loans/${id}/disbursement`,
         {
           method: "post",
           headers: {
@@ -71,7 +72,7 @@ const DisburseLoan = () => {
   const fetchLoan = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/api/v1/loans/${id}`, {
+      const response = await fetch(`${base_url}loans/${id}`, {
         method: "GET",
       });
       if (!response.ok) {
